@@ -1,0 +1,290 @@
+pom.xml
+
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.demo</groupId>
+  <artifactId>JPA_Hibernate_CRUD</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+
+  <name>JPA_Hibernate_CRUD</name>
+  <!-- FIXME change it to the project's website -->
+  <url>http://www.example.com</url>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.source>1.7</maven.compiler.source>
+    <maven.compiler.target>1.7</maven.compiler.target>
+  </properties>
+
+  <dependencies>
+	   <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>8.0.32</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-core -->
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>6.1.7.Final</version>
+        </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.11</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <pluginManagement><!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
+      <plugins>
+        <!-- clean lifecycle, see https://maven.apache.org/ref/current/maven-core/lifecycles.html#clean_Lifecycle -->
+        <plugin>
+          <artifactId>maven-clean-plugin</artifactId>
+          <version>3.1.0</version>
+        </plugin>
+        <!-- default lifecycle, jar packaging: see https://maven.apache.org/ref/current/maven-core/default-bindings.html#Plugin_bindings_for_jar_packaging -->
+        <plugin>
+          <artifactId>maven-resources-plugin</artifactId>
+          <version>3.0.2</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>3.8.0</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>2.22.1</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-jar-plugin</artifactId>
+          <version>3.0.2</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-install-plugin</artifactId>
+          <version>2.5.2</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-deploy-plugin</artifactId>
+          <version>2.8.2</version>
+        </plugin>
+        <!-- site lifecycle, see https://maven.apache.org/ref/current/maven-core/lifecycles.html#site_Lifecycle -->
+        <plugin>
+          <artifactId>maven-site-plugin</artifactId>
+          <version>3.7.1</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-project-info-reports-plugin</artifactId>
+          <version>3.0.0</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+</project>
+
+
+persistence.xml
+
+<persistence
+    xmlns="http://xmlns.jcp.org/xml/ns/persistence"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  version="2.1">
+    <persistence-unit name="PERSISTENCE">
+        <description> Hibernate JPA Configuration Example</description>
+        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+        <class>net.javaguides.hibernate.entity.Student</class>
+        <properties>
+         <property name="jakarta.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver" />
+            <property name="jakarta.persistence.jdbc.url"  value="jdbc:mysql://localhost:3306/hibernateproject" />
+            <property name="jakarta.persistence.jdbc.user" value="root" />
+            <property name="jakarta.persistence.jdbc.password" value="Praj@2811" />
+            <property name="hibernate.show_sql" value="true" />
+            <property name="hibernate.hbm2ddl.auto" value="create-drop" />
+        </properties>
+    </persistence-unit>
+</persistence>
+
+App.java
+
+package com.demo.JPA_Hibernate_CRUD;
+
+
+public class App 
+{
+    public static void main( String[] args )
+    {
+    	CRUDOperations crudOperations = new CRUDOperations();
+        crudOperations.insertEntity();
+        crudOperations.findEntity();
+        crudOperations.updateEntity();
+        crudOperations.removeEntity();
+    }
+}
+
+
+CRUDOperation.java
+
+package com.demo.JPA_Hibernate_CRUD;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
+
+public class CRUDOperations {
+    public void insertEntity() {
+        EntityManager entityManager = JPAUtil.getEntityManagerFactory().createEntityManager();
+        EntityTransaction entityTransaction = entityManager.getTransaction();
+        entityTransaction.begin();
+        Student student1 = new Student("Ramesh", "Fadatare", "ramesh@gmail.com");
+        entityManager.persist(student1);
+        Student student2 = new Student("Ram", "patil", "rampatil@gmail.com");
+        entityManager.persist(student2);
+        entityManager.getTransaction().commit();
+        entityManager.close();
+    }
+
+    public void findEntity() {
+        EntityManager entityManager = JPAUtil.getEntityManagerFactory().createEntityManager();
+        entityManager.getTransaction().begin();
+        Student student = entityManager.find(Student.class, 1);
+        System.out.println("student id :: " + student.getId());
+        System.out.println("student firstname :: " + student.getFirstName());
+        System.out.println("student lastname :: " + student.getLastName());
+        System.out.println("student email :: " + student.getEmail());
+        entityManager.getTransaction().commit();
+        entityManager.close();
+    }
+
+    public void updateEntity() {
+        EntityManager entityManager = JPAUtil.getEntityManagerFactory().createEntityManager();
+        entityManager.getTransaction().begin();
+
+        Student student = entityManager.find(Student.class, 1);
+        System.out.println("student id :: " + student.getId());
+        System.out.println("student firstname :: " + student.getFirstName());
+        System.out.println("student lastname :: " + student.getLastName());
+        System.out.println("student email :: " + student.getEmail());
+
+        // The entity object is physically updated in the database when the transaction
+        // is committed
+        student.setFirstName("Ram");
+        student.setLastName("jadhav");
+        entityManager.getTransaction().commit();
+        entityManager.close();
+    }
+
+    public void removeEntity() {
+        EntityManager entityManager = JPAUtil.getEntityManagerFactory().createEntityManager();
+        entityManager.getTransaction().begin();
+
+        Student student = entityManager.find(Student.class, 1);
+        System.out.println("student id :: " + student.getId());
+        System.out.println("student firstname :: " + student.getFirstName());
+        System.out.println("student lastname :: " + student.getLastName());
+        System.out.println("student email :: " + student.getEmail());
+        entityManager.remove(student);
+        entityManager.getTransaction().commit();
+        entityManager.close();
+    }
+}
+
+JPAUtil.java
+
+package com.demo.JPA_Hibernate_CRUD;
+
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Persistence;
+
+public class JPAUtil {
+    private static final String PERSISTENCE_UNIT_NAME = "PERSISTENCE";
+    private static EntityManagerFactory factory;
+
+    public static EntityManagerFactory getEntityManagerFactory() {
+        if (factory == null) {
+            factory = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME);
+        }
+        return factory;
+    }
+
+    public static void shutdown() {
+        if (factory != null) {
+            factory.close();
+        }
+    }
+}
+
+Student.java
+
+package com.demo.JPA_Hibernate_CRUD;
+
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "student")
+public class Student {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private int id;
+
+    @Column(name = "first_name")
+    private String firstName;
+
+    @Column(name = "last_name")
+    private String lastName;
+
+    @Column(name = "email")
+    private String email;
+
+    public Student() {
+
+    }
+
+    public Student(String firstName, String lastName, String email) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    @Override
+    public String toString() {
+        return "Student [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", email=" + email + "]";
+    }
+}
