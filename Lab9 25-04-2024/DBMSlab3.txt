@@ -1,0 +1,180 @@
+1. Write a SQL statement to create a simple table countries including columns country_id,country_name and region_id.
+
+mysql> CREATE TABLE countries1 (
+    ->     country_id INT PRIMARY KEY,
+    ->     country_name VARCHAR(255),
+    ->     region_id VARCHAR(255)
+    -> );
+Query OK, 0 rows affected (0.46 sec)
+
+mysql> desc countries1;
++--------------+--------------+------+-----+---------+-------+
+| Field        | Type         | Null | Key | Default | Extra |
++--------------+--------------+------+-----+---------+-------+
+| country_id   | int          | NO   | PRI | NULL    |       |
+| country_name | varchar(255) | YES  |     | NULL    |       |
+| region_id    | varchar(255) | YES  |     | NULL    |       |
++--------------+--------------+------+-----+---------+-------+
+3 rows in set (0.01 sec)
+
+mysql> insert into countries1 values(1,'India','IN');
+Query OK, 1 row affected (0.02 sec)
+
+mysql> insert into countries1 values(2,'American','US')
+    -> ;
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into countries1 values(3,'London','UK');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into countries1 values(4,'Australia','AU');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select * from countries1;
++------------+--------------+-----------+
+| country_id | country_name | region_id |
++------------+--------------+-----------+
+|          1 | India        | IN        |
+|          2 | American     | US        |
+|          3 | London       | UK        |
+|          4 | Australia    | AU        |
++------------+--------------+-----------+
+4 rows in set (0.00 sec)
+
+
+2.Write a SQL statement to create a table named jobs including columns job_id, job_title, min_salary, max_salary and check whether the max_salary amount exceeding the upper limit 25000.
+
+mysql> CREATE TABLE jobs (
+    ->     job_id INT PRIMARY KEY,
+    ->     job_title VARCHAR(255),
+    ->     min_salary DECIMAL(10, 2),
+    ->     max_salary DECIMAL(10, 2)
+    -> );
+Query OK, 0 rows affected (0.46 sec)
+
+mysql> insert into jobs values(111,'Program Analyst',10000,25000);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into jobs values(112,'Testing Role',15000,30000);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into jobs values(113,'Association',15000,50000);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into jobs values(114,'Manager',30000,100000);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select * from jobs;
++--------+-----------------+------------+------------+
+| job_id | job_title       | min_salary | max_salary |
++--------+-----------------+------------+------------+
+|    111 | Program Analyst |   10000.00 |   25000.00 |
+|    112 | Testing Role    |   15000.00 |   30000.00 |
+|    113 | Association     |   15000.00 |   50000.00 |
+|    114 | Manager         |   30000.00 |  100000.00 |
++--------+-----------------+------------+------------+
+4 rows in set (0.00 sec)
+
+mysql> select sum(max_salary) from jobs group by job_id having sum(max_salary>25000);
++-----------------+
+| sum(max_salary) |
++-----------------+
+|        30000.00 |
+|        50000.00 |
+|       100000.00 |
++-----------------+
+3 rows in set (0.01 sec)
+
+
+3. Write a SQL statement to create a table employees including columns employee_id, first_name, last_name, email, phone_number hire_date, job_id, salary, commission, manager_id and department_id and make sure that, the employee_id column does not contain any duplicate value at the time of insertion, and the foreign key column department_id, reference by the column department_id of departments table, can contain only those values which are exists in the departments table and another foreign key column job_id, referenced by the column job_id of jobs table, can contain only those values which are exists in the jobs table. The InnoDB Engine have been used to create the tables.
+
+mysql> CREATE TABLE employees1 (
+    ->     employee_id INT PRIMARY KEY,
+    ->     first_name VARCHAR(255),
+    ->     last_name VARCHAR(255),
+    ->     email VARCHAR(255),
+    ->     phone_number VARCHAR(20),
+    ->     hire_date DATE,
+    ->     job_id INT,
+    ->     salary DECIMAL(10, 2),
+    ->     commission DECIMAL(10, 2),
+    ->     department_id INT,
+    ->     CONSTRAINT department_id FOREIGN KEY (department_id) REFERENCES department(department_id),
+    ->     CONSTRAINT job_id FOREIGN KEY (job_id) REFERENCES jobs(job_id),
+    ->     CONSTRAINT employee_id UNIQUE (employee_id)
+    -> ) ENGINE=InnoDB;
+Query OK, 0 rows affected (0.15 sec)
+
+mysql> desc employees1;
++---------------+---------------+------+-----+---------+-------+
+| Field         | Type          | Null | Key | Default | Extra |
++---------------+---------------+------+-----+---------+-------+
+| employee_id   | int           | NO   | PRI | NULL    |       |
+| first_name    | varchar(255)  | YES  |     | NULL    |       |
+| last_name     | varchar(255)  | YES  |     | NULL    |       |
+| email         | varchar(255)  | YES  |     | NULL    |       |
+| phone_number  | varchar(20)   | YES  |     | NULL    |       |
+| hire_date     | date          | YES  |     | NULL    |       |
+| job_id        | int           | YES  | MUL | NULL    |       |
+| salary        | decimal(10,2) | YES  |     | NULL    |       |
+| commission    | decimal(10,2) | YES  |     | NULL    |       |
+| department_id | int           | YES  | MUL | NULL    |       |
++---------------+---------------+------+-----+---------+-------+
+10 rows in set (0.45 sec)
+
+mysql> INSERT INTO employees1 (employee_id, first_name, last_name, email, phone_number, hire_date, job_id, salary, commi
+ssion, department_id)
+    -> VALUES
+    -> (1, 'John', 'Doe', 'john.doe@example.com', '1234567890', '2024-04-29', 1, 50000.00, 0.00, 1),
+    -> (2, 'Jane', 'Smith', 'jane.smith@example.com', '9876543210', '2024-04-29', 2, 60000.00, 0.00, 2);
+mysql> select * from department;
++---------------+-----------------+
+| department_id | department_name |
++---------------+-----------------+
+|             1 | IT              |
+|             2 | CSE             |
+|             3 | ME              |
+|             4 | ENTC            |
++---------------+-----------------+
+4 rows in set (0.00 sec)
+
+mysql> INSERT INTO employees1 (employee_id, first_name, last_name, email, phone_number, hire_date, job_id, salary, commission, department_id)
+    -> VALUES
+    -> (1, 'John', 'Doe', 'john.doe@example.com', '1234567890', '2024-04-29', 111, 50000.00, 0.00, 1),
+    -> (2, 'Jane', 'Smith', 'jane.smith@example.com', '9876543210', '2024-04-29', 112, 60000.00, 0.00, 2);
+Query OK, 2 rows affected (0.02 sec)
+Records: 2  Duplicates: 0  Warnings: 0
+
+mysql> select * from employees;
+ERROR 1146 (42S02): Table 'anp_7344.employees' doesn't exist
+mysql> select * from employees1;
++-------------+------------+-----------+------------------------+--------------+------------+--------+----------+------------+---------------+
+| employee_id | first_name | last_name | email                  | phone_number | hire_date  | job_id | salary   | commission | department_id |
++-------------+------------+-----------+------------------------+--------------+------------+--------+----------+------------+---------------+
+|           1 | John       | Doe       | john.doe@example.com   | 1234567890   | 2024-04-29 |    111 | 50000.00 |       0.00 |             1 |
+|           2 | Jane       | Smith     | jane.smith@example.com | 9876543210   | 2024-04-29 |    112 | 60000.00 |       0.00 |             2 |
++-------------+------------+-----------+------------------------+--------------+------------+--------+----------+------------+---------------+
+2 rows in set (0.00 sec)
+
+mysql> INSERT INTO employees1 (employee_id, first_name, last_name, email, phone_number, hire_date, job_id, salary, commission, department_id)
+    -> VALUES
+    -> (1, 'Prana', 'Sandupatla', 'prana@gmail.com', '1234598765', '2024-04-25', 111, 50000.00, 0.00, 1),
+    -> (2, 'Grace', 'Doe', 'gracedoe@gmail.com', '9876543210', '2024-04-29', 112, 60000.00, 0.00, 2);
+ERROR 1062 (23000): Duplicate entry '1' for key 'employees1.PRIMARY'
+mysql> INSERT INTO employees1 (employee_id, first_name, last_name, email, phone_number, hire_date, job_id, salary, commission, department_id)
+    -> VALUES
+    -> (3, 'Gloria', 'Adam', 'gloria@gmail.com', '9876543210', '2024-04-26', 113, 50000.00, 0.00, 3),
+    -> (4, 'Troy', 'Smit', 'Troy@gmail.com', '9876548760', '2024-04-26', 114, 55000.00, 0.00, 4);
+Query OK, 2 rows affected (0.10 sec)
+Records: 2  Duplicates: 0  Warnings: 0
+
+mysql> select * from employees1;
++-------------+------------+-----------+------------------------+--------------+------------+--------+----------+------------+---------------+
+| employee_id | first_name | last_name | email                  | phone_number | hire_date  | job_id | salary   | commission | department_id |
++-------------+------------+-----------+------------------------+--------------+------------+--------+----------+------------+---------------+
+|           1 | John       | Doe       | john.doe@example.com   | 1234567890   | 2024-04-29 |    111 | 50000.00 |       0.00 |             1 |
+|           2 | Jane       | Smith     | jane.smith@example.com | 9876543210   | 2024-04-29 |    112 | 60000.00 |       0.00 |             2 |
+|           3 | Gloria     | Adam      | gloria@gmail.com       | 9876543210   | 2024-04-26 |    113 | 50000.00 |       0.00 |             3 |
+|           4 | Troy       | Smit      | Troy@gmail.com         | 9876548760   | 2024-04-26 |    114 | 55000.00 |       0.00 |             4 |
++-------------+------------+-----------+------------------------+--------------+------------+--------+----------+------------+---------------+
+4 rows in set (0.00 sec)
