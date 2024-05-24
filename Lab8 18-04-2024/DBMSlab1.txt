@@ -1,0 +1,67 @@
+mysql> create table Orders(order_id integer primary key,customer_id integer,order_date varchar(20),total_amount varchar(
+20),FOREIGN KEY(customer_id) REFERENCES Customer1(customer_id));
+Query OK, 0 rows affected (0.50 sec)
+
+mysql> desc customer1;
++-------------+-------------+------+-----+---------+-------+
+| Field       | Type        | Null | Key | Default | Extra |
++-------------+-------------+------+-----+---------+-------+
+| customer_id | int         | NO   | PRI | NULL    |       |
+| First_name  | varchar(20) | YES  |     | NULL    |       |
+| Last_name   | varchar(20) | YES  |     | NULL    |       |
++-------------+-------------+------+-----+---------+-------+
+3 rows in set (0.40 sec)
+
+mysql> insert into customers1(customer_id,First_name,Last_name)values('1','Pranali','Sandupatla');
+mysql> insert into customer1(customer_id,First_name,Last_name)values('1','Pranali','Sandupatla');
+Query OK, 1 row affected (0.11 sec)
+
+mysql> insert into customer1(customer_id,First_name,Last_name)values('2','Jaya','Mergu');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into customer1(customer_id,First_name,Last_name)values('3','Akki','Mamdyal');
+Query OK, 1 row affected (0.36 sec)
+
+mysql> insert into customer1(customer_id,First_name,Last_name)values('4','Nandu','Saka');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select * from Customer1;
++-------------+------------+------------+
+| customer_id | First_name | Last_name  |
++-------------+------------+------------+
+|           1 | Pranali    | Sandupatla |
+|           2 | Jaya       | Mergu      |
+|           3 | Akki       | Mamdyal    |
+|           4 | Nandu      | Saka       |
++-------------+------------+------------+
+4 rows in set (0.00 sec)
+
+mysql> desc Orders;
++--------------+-------------+------+-----+---------+-------+
+| Field        | Type        | Null | Key | Default | Extra |
++--------------+-------------+------+-----+---------+-------+
+| order_id     | int         | NO   | PRI | NULL    |       |
+| customer_id  | int         | YES  | MUL | NULL    |       |
+| order_date   | varchar(20) | YES  |     | NULL    |       |
+| total_amount | varchar(20) | YES  |     | NULL    |       |
++--------------+-------------+------+-----+---------+-------+
+4 rows in set (0.39 sec)
+
+mysql> insert into Orders values(1,1,'11-04-2024','500'),(2,2.'13-04-2024','250'),(3,3,'15-04-2024','340')(4,4,'5-6-2024',7659.9);
+mysql> insert into Orders values(1,1,'11-04-2024','500'),(2,2,'13-04-2024','250'),(3,3,'15-04-2024','340')(4,4,'5-6-2024
+',7659);
+mysql> insert into Orders values(1,1,'11-04-2024','500'),(2,2,'13-04-2024','250'),(3,3,'15-04-2024','340'),(4,4,'5-6-202
+4',7659);
+Query OK, 4 rows affected (0.20 sec)
+Records: 4  Duplicates: 0  Warnings: 0
+
+mysql> select * from Orders;
++----------+-------------+------------+--------------+
+| order_id | customer_id | order_date | total_amount |
++----------+-------------+------------+--------------+
+|        1 |           1 | 11-04-2024 | 500          |
+|        2 |           2 | 13-04-2024 | 250          |
+|        3 |           3 | 15-04-2024 | 340          |
+|        4 |           4 | 5-6-2024   | 7659         |
++----------+-------------+------------+--------------+
+4 rows in set (0.00 sec)

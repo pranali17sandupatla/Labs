@@ -1,0 +1,75 @@
+
+mysql> create table Department(department_id integer primary key,department_name varchar(20));
+Query OK, 0 rows affected (0.26 sec)
+
+mysql> create table Employee(employee_id integer primary key,first_name varchar(20),department_id integer, FOREIGN KEY(d
+epartment_id) REFERENCES Department(department_id));
+Query OK, 0 rows affected (0.53 sec)
+
+mysql> desc Department;
++-----------------+-------------+------+-----+---------+-------+
+| Field           | Type        | Null | Key | Default | Extra |
++-----------------+-------------+------+-----+---------+-------+
+| department_id   | int         | NO   | PRI | NULL    |       |
+| department_name | varchar(20) | YES  |     | NULL    |       |
++-----------------+-------------+------+-----+---------+-------+
+2 rows in set (0.00 sec)
+
+mysql> insert into Department values(1,'IT'),(2,'CSE'),(3,'ME'),(4,'ENTC');
+Query OK, 4 rows affected (0.01 sec)
+Records: 4  Duplicates: 0  Warnings: 0
+mysql> select * from Department;
++---------------+-----------------+
+| department_id | department_name |
++---------------+-----------------+
+|             1 | IT              |
+|             2 | CSE             |
+|             3 | ME              |
+|             4 | ENTC            |
++---------------+-----------------+
+4 rows in set (0.00 sec)
+
+mysql> desc Employee;
++---------------+-------------+------+-----+---------+-------+
+| Field         | Type        | Null | Key | Default | Extra |
++---------------+-------------+------+-----+---------+-------+
+| employee_id   | int         | NO   | PRI | NULL    |       |
+| first_name    | varchar(20) | YES  |     | NULL    |       |
+| department_id | int         | YES  | MUL | NULL    |       |
++---------------+-------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql> insert into Employee(1,'Prana Sandupatla',1),(2,'Glori gold',2),(3,'Grace Golria',3);
+mysql> insert into Employee(1,'PranaSandupatla',1),(2,'Glorigold',2),(3,'GraceGolria',3);
+mysql> insert into Employee values(1,'Prana Sandupatla',1),(2,'Glori gold',2),(3,'Grace Golria',3);
+Query OK, 3 rows affected (0.41 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+mysql> select * from Employee;
++-------------+------------------+---------------+
+| employee_id | first_name       | department_id |
++-------------+------------------+---------------+
+|           1 | Prana Sandupatla |             1 |
+|           2 | Glori gold       |             2 |
+|           3 | Grace Golria     |             3 |
++-------------+------------------+---------------+
+3 rows in set (0.00 sec)
+
+mysql> SELECT  Department.department_id, department_name, employee.firts_name
+    -> FROM Department
+    -> LEFT JOIN Employee ON Department.department_id=Employee.department_id;
+ERROR 1054 (42S22): Unknown column 'employee.firts_name' in 'field list'
+mysql> SELECT  Department.department_id, department_name, Employee.first_name
+    -> FROM Department
+    -> LEFT JOIN Employee ON Department.department_id=Employee.department_id;
++---------------+-----------------+------------------+
+| department_id | department_name | first_name       |
++---------------+-----------------+------------------+
+|             1 | IT              | Prana Sandupatla |
+|             2 | CSE             | Glori gold       |
+|             3 | ME              | Grace Golria     |
+|             4 | ENTC            | NULL             |
++---------------+-----------------+------------------+
+4 rows in set (0.01 sec)
+
+mysql>
